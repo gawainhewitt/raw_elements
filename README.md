@@ -1,4 +1,4 @@
-# Raw Seasons
+# Raw Elements
 An interactive online sound installation made with a group of musicians and artists from [Raw Material](https://rawmusicmedia.co.uk/).
 
 All artistic material created and concieved by members of the "Smorgasbord" sound art project run online with Raw Material during November and December 2020.
