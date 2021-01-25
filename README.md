@@ -1,5 +1,5 @@
 # Raw Seasons
-A interactive online sound installation with made with a group of musicians and artists from [Raw Material](https://rawmusicmedia.co.uk/).
+An interactive online sound installation with made with a group of musicians and artists from [Raw Material](https://rawmusicmedia.co.uk/).
 
 All artistic material created and concieved by members of the "smorgasbord" sound art project run online with Raw Material during November and December 2020.
 
