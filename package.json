@@ -1,0 +1,20 @@
+{
+  "name": "rawelements",
+  "version": "1.0.0",
+  "description": "",
+  "main": "sketch.js",
+  "scripts": {
+    "build": "rm -rf ./dist/* && cp ./index.html ./dist/index.html && cp -avr ./css/ ./dist/ && cp ./sketch.js ./dist/sketch.js && cp -avr ./images/ ./dist/ && cp -avr ./sounds/ ./dist/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gawainhewitt/raw_elements.git"
+  },
+  "keywords": [],
+  "author": "Gawain Hewitt",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gawainhewitt/raw_elements/issues"
+  },
+  "homepage": "https://github.com/gawainhewitt/raw_elements#readme"
+}
