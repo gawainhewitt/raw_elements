@@ -96,7 +96,7 @@ span.clear { clear: left; display: block; } /* clears the float thus ensuring th
     margin: 0px;
     padding: 0px;
     height: auto;
-    width: 32.6%;
+    width: 49%;
     float: left;
     text-align: center;
     background-color: rgb(255, 255, 0);
@@ -105,7 +105,7 @@ span.clear { clear: left; display: block; } /* clears the float thus ensuring th
     margin: 0px;
     padding: 0px;
     height: auto;
-    width: 32.6%;
+    width: 49%;
     float: left;
     text-align: center;
     background-color: rgb(200, 200, 0);
@@ -115,7 +115,7 @@ span.clear { clear: left; display: block; } /* clears the float thus ensuring th
     margin: 0px;
     padding: 0px;
     height: auto;
-    width: 32.6%;
+    width: 49%;
     float: left;
     text-align: center;
     background-color:  rgb(255, 255, 0);
@@ -125,61 +125,12 @@ span.clear { clear: left; display: block; } /* clears the float thus ensuring th
     margin: 0px;
     padding: 0px;
     height: auto;
-    width: 32.6%;
+    width: 49%;
     float: left;
     text-align: center;
     background-color: rgb(200, 200, 0);
 }
 
-#image4 {
-    margin: 10;
-    padding: 0px;
-    height: auto;
-    width: 32.6%;
-    float: left;
-    text-align: center;
-    background-color:  rgb(255, 255, 0);
-}
-
-#image5 {
-    margin: 0px;
-    padding: 0px;
-    height: auto;
-    width: 32.6%;
-    float: left;
-    text-align: center;
-    background-color: rgb(200, 200, 0);
-}
-
-#image6 {
-    margin: 0px;
-    padding: 0px;
-    height: auto;
-    width: 32.6%;
-    float: left;
-    text-align: center;
-    background-color:  rgb(255, 255, 0);
-}
-
-#image7 {
-    margin: 0px;
-    padding: 0px;
-    height: auto;
-    width: 32.6%;
-    float: left;
-    text-align: center;
-    background-color: rgb(200, 200, 0);
-}
-
-#image8 {
-    margin: 0px;
-    padding: 0px;
-    height: auto;
-    width: 32.6%;
-    float: left;
-    text-align: center;
-    background-color:  rgb(255, 255, 0);
-}
 
 div.img img {
     display: inline;
