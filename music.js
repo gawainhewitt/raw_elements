@@ -1,4 +1,17 @@
-var synth = new Tone.PolySynth().toDestination();        // call a new tone synth and patch it to the sound
+var circleCursor =document.querySelector('.cursor');
+
+document.body.onmousemove = function(e) {
+  e.preventDefault();
+  circleCursor.style.setProperty('background-position',(e.clientX - 15)+'px '+(e.clientY - 15)+'px');
+}
+
+document.body.addEventListener("touchmove", cursorMove, false);
+
+function cursorMove(e) {
+  e.preventDefault();
+  circleCursor.style.setProperty('background-position',(e.clientX - 15)+'px '+(e.clientY - 15)+'px');
+}
+
 var info = true;    // this tells us whether to display the info screen or not
 var ongoingTouches = []; // to store ongoing touches in for multitouch
 const now = Tone.now(); // time variable to tell the tone.js when to play - i.e play now! (when function called for example)
@@ -27,11 +40,11 @@ function hideLoadScreen() {
   document.getElementById('loadscreen').style.visibility="hidden";
   var welcome = document.getElementById('welcomescreen');
   welcome.style.visibility="visible";
-  welcome.addEventListener("click", startHorn);
-  welcome.addEventListener("touchstart", startHorn);
+  welcome.addEventListener("click", start);
+  welcome.addEventListener("touchstart", start);
 }
 
-function startHorn() {
+function start() {
   document.getElementById('welcomescreen').style.visibility="hidden";
   if(info === true) { // is the info screen on?
     Tone.start(); // we need this to allow audio to start. probably best to put it on a different button soon though
