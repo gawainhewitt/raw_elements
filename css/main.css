@@ -6,24 +6,6 @@ body {
 
 }
 
-.cursor::after { /* allows a circle to track the mouse, however also breaks mouse click so i need to understand this better from https://stackoverflow.com/questions/59268051/circle-follow-cursor-after-hover-on-button */
-  content:"";
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-  background:
-    radial-gradient(farthest-side,
-     transparent calc(100% - 8px),
-     rgb(255, 255, 255) calc(100% - 2px) calc(100% - 1px),
-     transparent 100%)
-     fixed /* Fixed to the screen*/
-     no-repeat; /* Don't repeat*/
-  background-size:30px 30px;
-  background-position:inherit;
-}
-
 @media (min-aspect-ratio: 3/2) {
 #container{
     width: 48%;
