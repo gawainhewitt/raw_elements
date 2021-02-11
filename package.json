@@ -4,7 +4,7 @@
   "description": "",
   "main": "sketch.js",
   "scripts": {
-    "build": "rm -rf ./dist/* && cp ./index.html ./dist/index.html && cp -avr ./css/ ./dist/ && cp ./home.js ./dist/home.js && cp ./music.js ./dist/music.js && cp -avr ./images/ ./dist/ && cp -avr ./sounds/ ./dist/"
+    "build": "rm -rf ./dist/* && cp ./index.html ./dist/index.html && cp -avr ./css/ ./dist/ && cp ./home.js ./dist/home.js && cp ./p5.min.js ./dist/p5.min.js && cp ./music.js ./dist/music.js && cp -avr ./images/ ./dist/ && cp -avr ./sounds/ ./dist/"
   },
   "repository": {
     "type": "git",

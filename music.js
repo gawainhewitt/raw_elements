@@ -1,16 +1,80 @@
-var circleCursor =document.querySelector('.cursor');
+let endedTouches = []; // array to store ended touches in
 
-document.body.onmousemove = function(e) {
-  e.preventDefault();
-  circleCursor.style.setProperty('background-position',(e.clientX - 15)+'px '+(e.clientY - 15)+'px');
+function setup() {
+  let cnv = createCanvas(480, 400); // create canvas
+  cnv.parent('p5parent'); //put the canvas in a div with this id if needed
+  colorMode(HSB, 5); // specify HSB colormode and set the range to be between 0 and 5
+  noStroke(); // no stroke on the drawings
 }
 
-document.body.addEventListener("touchmove", cursorMove, false);
-
-function cursorMove(e) {
-  e.preventDefault();
-  circleCursor.style.setProperty('background-position',(e.clientX - 15)+'px '+(e.clientY - 15)+'px');
+function draw() {
+  background(0, 0, 5); // background is white (remmember 5 is maximum)
+  for (let t of touches) { // cycle through the touches
+    //console.log(t) // log the touches if you want to for debugging
+    fill(t.id % 5, 4, 4); // each touch point's colour relates to touch id. however remember that on iOs the id numbers are huge so this doesn't work so well
+    ellipse(t.x, t.y, 100); //make a circle at the position of the touch
+    fill(0, 0, 0); // set colour to black
+    text(t.id, t.x - 50, t.y - 50); // display the touch id on the screen (for debuggin)
+  }
+  for (let t of endedTouches) { // cycle through the end touches
+    let tDiff = millis() - t.time; // set tDiff to tell us how recently we stopped touching
+    if (tDiff < 1000) { // if we stopped touching within the last second
+      fill(t.id % 5, 4, 4); // set the colour based on the id of the touch that we ended
+      ellipse(t.x, t.y, map(tDiff, 0, 1000, 100, 0)); // the circle is drawn smaller and smaller depending on how much time elapsed since touch
+    }
+  }
 }
+
+function touchEnded(e) {
+  if (e instanceof TouchEvent) {  // touchEnded also captures other events, so this ensures we're only looking at the info we are interested in
+    for (let t of e.changedTouches) { // cycle through the p5.js changedTouches array (which is not documented)
+      console.log("touch id " + t.identifier + // debugging
+        " released at x: " + t.clientX +
+        " y: " + t.clientY)
+      endedTouches.push({ //create our ended touches array from which we can call .time, .id, .x, .y
+        time: millis(),
+        id: t.identifier,
+        x: t.clientX,
+        y: t.clientY
+      });
+    }
+
+  } else {
+    console.log('non-touch event received');
+  }
+  return false;
+}
+
+function touchStarted() {
+  return false;
+}
+
+function touchMoved() {
+  return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 var info = true;    // this tells us whether to display the info screen or not
 var ongoingTouches = []; // to store ongoing touches in for multitouch
@@ -35,6 +99,8 @@ function startup() {
     el.addEventListener("mouseup", handleMouseUp);
     }
 }
+
+
 
 function hideLoadScreen() {
   document.getElementById('loadscreen').style.visibility="hidden";
@@ -61,15 +127,7 @@ function handleMouseDown(evt) {
 
   evt.preventDefault();
 
-  var elem = this.id; //returns the id of the element that triggered the mouse event
-  console.log("mouseDown id "+elem); //debugging
 
-  for(var i = 0; i < 9; i++) { // for loop to check which element it is and get a number to send to the synth
-    if(elem === "image"+i){ // this looks confusing because the id name also contains "i" - see that HTML
-      playSynth(i); // call the playSynth function
-      whichClicked[i] = 1; //store the click in an array as a boolean true
-    }
-  }
 
 }
 

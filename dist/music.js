@@ -1,16 +1,80 @@
-var circleCursor =document.querySelector('.cursor');
+let endedTouches = [];
 
-document.body.onmousemove = function(e) {
-  e.preventDefault();
-  circleCursor.style.setProperty('background-position',(e.clientX - 15)+'px '+(e.clientY - 15)+'px');
+function setup() {
+  let cnv = createCanvas(480, 400);
+  cnv.parent('p5parent');
+  colorMode(HSB, 5);
+  noStroke();
 }
 
-document.body.addEventListener("touchmove", cursorMove, false);
-
-function cursorMove(e) {
-  e.preventDefault();
-  circleCursor.style.setProperty('background-position',(e.clientX - 15)+'px '+(e.clientY - 15)+'px');
+function draw() {
+  background(0, 0, 5);
+  for (let t of touches) {
+    //console.log(t)
+    fill(t.id % 5, 4, 4);
+    ellipse(t.x, t.y, 100);
+    fill(0, 0, 0);
+    text(t.id, t.x - 50, t.y - 50);
+  }
+  for (let t of endedTouches) {
+    let tDiff = millis() - t.time;
+    if (tDiff < 1000) {
+      fill(t.id % 5, 4, 4);
+      ellipse(t.x, t.y, map(tDiff, 0, 1000, 100, 0));
+    }
+  }
 }
+
+function touchEnded(e) {
+  if (e instanceof TouchEvent) {
+    for (let t of e.changedTouches) {
+      console.log("touch id " + t.identifier +
+        " released at x: " + t.clientX +
+        " y: " + t.clientY)
+      endedTouches.push({
+        time: millis(),
+        id: t.identifier,
+        x: t.clientX,
+        y: t.clientY
+      });
+    }
+
+  } else {
+    console.log('non-touch event received');
+  }
+  return false;
+}
+
+function touchStarted() {
+  return false;
+}
+
+function touchMoved() {
+  return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 var info = true;    // this tells us whether to display the info screen or not
 var ongoingTouches = []; // to store ongoing touches in for multitouch
@@ -35,6 +99,8 @@ function startup() {
     el.addEventListener("mouseup", handleMouseUp);
     }
 }
+
+
 
 function hideLoadScreen() {
   document.getElementById('loadscreen').style.visibility="hidden";
@@ -61,15 +127,7 @@ function handleMouseDown(evt) {
 
   evt.preventDefault();
 
-  var elem = this.id; //returns the id of the element that triggered the mouse event
-  console.log("mouseDown id "+elem); //debugging
 
-  for(var i = 0; i < 9; i++) { // for loop to check which element it is and get a number to send to the synth
-    if(elem === "image"+i){ // this looks confusing because the id name also contains "i" - see that HTML
-      playSynth(i); // call the playSynth function
-      whichClicked[i] = 1; //store the click in an array as a boolean true
-    }
-  }
 
 }
 
