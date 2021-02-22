@@ -3,7 +3,7 @@
 // sizing and resizing dynamically is happening in css #mycanvas and #parentdiv - overrides what's happening in here
 
 
-let numberOfButtons = 7;// automatically generate circular synth based on this
+let numberOfButtons = 1;// automatically generate circular synth based on this
 
 let endedTouches = []; // array to store ended touches in
 let buttonPositions = []; // position to draw the buttons
@@ -42,6 +42,7 @@ let whichKey = [0,0,0,0,0,0,0,0,0]; // array ensures only one trigger per qwerty
 let mouseState = []; // variable to store mouse clicks and drags in
 let mouseClick = false;
 let welcome = true;
+let load = true;
 
 
 function setup() {  // setup p5
@@ -75,7 +76,7 @@ function setup() {  // setup p5
   el.addEventListener("mousemove", handleMouseMove);
   offset = el.getBoundingClientRect(); // get the size and position of the p5parent div so i can use offset top to work out where touch and mouse actually need to be
 
-  colorMode(HSB, numberOfButtons + 1); // specify HSB colormode and set the range to be between 0 and numberOfButtons
+  colorMode(HSB, 5); // specify HSB colormode and set the range to be between 0 and numberOfButtons
   noStroke(); // no stroke on the drawings
 
   radius = width/8;
@@ -85,51 +86,52 @@ function setup() {  // setup p5
     mouseState.push(0);
   }
 
-  welcomeScreen(); // initial screen for project - also allows an elegant place to put in the Tone.start() command.
+  loadScreen();
                     // if animating put an if statement in the draw() function otherwise it will instantly overide it
   createButtonPositions(); // generate the default array info depending on number of buttons
 }
 
-function welcomeScreen() {
+function loadScreen() {
   background(1, 0, 4); // background is grey (remember 5 is maximum because of the setup of colorMode)
   textSize(32);
   textAlign(CENTER, CENTER);
-  text("Gawain's test setup. Touch screen or click mouse or use keys QWERTYU", width/10, height/10, (width/10) * 8, (height/10) * 8);
+  text("loading", width/10, height/10, (width/10) * 8, (height/10) * 8);
+}
+
+function welcomeScreen() {
+  load = false;
+  background(1, 0, 4); // background is grey (remember 5 is maximum because of the setup of colorMode)
+  textSize(32);
+  textAlign(CENTER, CENTER);
+  text("Raw Elements. Click button to play", width/10, height/10, (width/10) * 8, (height/10) * 8);
 }
 
 function createButtonPositions() {
-  for(let i = 0; i < numberOfButtons; i++) {
+
     //convert polar coordinates to cartesian coordinates
     let _x = r * sin(angle);
     let _y = r * cos(angle);
-    let theNote = scale[i] + octave + theKey; // the note plus the octave plus the offset from the key menu
+    let theNote = scale[0] + octave + theKey; // the note plus the octave plus the offset from the key menu
 
-    console.log(`position ${i} x = ${_x} y = ${_y}`);
 
     //create our buttonPositions array
     buttonPositions.push({
-      x: _x + width/2,
-      y: _y + height/2
+      x: width/2,
+      y: height/2
     });
 
     buttonState.push(0); //create default state of the buttons array
-    buttonColour.push(i); // set default colour of the buttons
-    buttonOffColour.push(i); // create default off colours
+    buttonColour.push(0); // set default colour of the buttons
+    buttonOffColour.push(0); // create default off colours
     buttonOnColour.push(numberOfButtons); // create default on colours
     synthState.push(0); //create default state of the synth array
     notes.push(allTheNotes[theNote]); //create the scale that we are using
 
     //increase angle by step size
     angle = angle + step;
-  }
+
   console.log(notes);
   console.log("offset height = " + offset.top);
-  buttonPositions.reverse(); // reverse the array because I want to draw the other way around
-
-  // the following is because I want the first button to be the bottom one, and otherwise the bottom one is the last
-  let firstButton = buttonPositions.pop(); //remove last element from the array
-  buttonPositions.unshift(firstButton); // and put it at the front
-
 }
 
 
@@ -150,10 +152,54 @@ function draw() {  // p5 draw function - the traditional way to do this in p5 - 
 
 }
 
+let player1;
+let player2;
+
+const buffers = new Tone.ToneAudioBuffers({
+  urls: {
+    A1: "firebeat.mp3",
+    A2: "ha1.mp3",
+  },
+  onload:  () => welcomeScreen(), // initial screen for project - also allows an elegant place to put in the Tone.start() command.,
+  baseUrl: "/sounds/"
+});
+
 function startAudio() {
     Tone.start(); // we need this to allow audio to start.
     welcome = false;
     soundOn = true;
+    player1 = new Tone.Player().toDestination();
+    player1.buffer = buffers.get("A1");
+    player1.set(
+      {
+        "mute": false,
+        "volume": 0,
+        "autostart": false,
+        "fadeIn": 11,
+        "fadeOut": 2,
+        "loop": true,
+        "loopEnd": 6.842,
+        "loopStart": 0,
+        "playbackRate": 1,
+        "reverse": false
+      }
+    );
+    player2 = new Tone.Player().toDestination();
+    player2.buffer = buffers.get("A2");
+    player2.set(
+      {
+        "mute": false,
+        "volume": 0,
+        "autostart": false,
+        "fadeIn": 11,
+        "fadeOut": 2,
+        "loop": true,
+        "loopEnd": 6.842,
+        "loopStart": 0,
+        "playbackRate": 1,
+        "reverse": false
+      }
+    );
     synth = new Tone.PolySynth({
       "oscillator": {
         type: 'sawtooth6'
@@ -398,18 +444,25 @@ function handleKeyUp(e) {
 
 function playSynth(i) {
   if(synthState[i] === 0) { // if the synth is not playing that note at the moment
-    synth.triggerAttack(notes[i]); // play the note
+    player1.start(); // play the note
+    player2.start();
     synthState[i] = 1; // change the array to reflect that the note is playing
     buttonColour[i] = buttonOnColour[i]; //change the colour of the button to on colour
+  }else{
+    player1.stop();
+    player2.stop();
+    synthState[i] = 0; // change the array to reflect that the note is playing
+    buttonColour[i] = buttonOffColour[i]; //change the colour of the button to off colour
   }
 }
 
 function stopSynth(i) {
-  if(synthState[i] === 1) { // if the synth is playing that note at the moment
-    synth.triggerRelease(notes[i]); // stop the note
-    synthState[i] = 0; // change the array to reflect that the note is playing
-    buttonColour[i] = buttonOffColour[i]; //change the colour of the button to off colour
-  }
+  // if(synthState[i] === 1) { // if the synth is playing that note at the moment
+  //   player1.stop();
+  //   player2.stop();
+  //   synthState[i] = 0; // change the array to reflect that the note is playing
+  //   buttonColour[i] = buttonOffColour[i]; //change the colour of the button to off colour
+  // }
 }
 
  // the following is to do with the select boxes and making them look pretty
