@@ -144,6 +144,9 @@ function draw() {  // p5 draw function - the traditional way to do this in p5 - 
     for (let i = 0; i < buttonPositions.length; i++) {
       fill(buttonColour[i], 4, 4);
       ellipse(buttonPositions[i].x, buttonPositions[i].y, radius * 2);
+      fill(0, 0, 0);
+      text(`x = ${mouseX}`, buttonPositions[i].x, buttonPositions[i].y);
+      text(`y = ${mouseY}`, buttonPositions[i].x, buttonPositions[i].y +30);
     }
 
     fill(4, 4, 4); // each touch point's colour relates to touch id. however remember that on iOs the id numbers are huge so this doesn't work so well
