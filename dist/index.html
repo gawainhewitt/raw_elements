@@ -6,23 +6,44 @@
   <title>Raw Elements</title>
   <link rel="stylesheet" href="css/main.css" />
   <script src='https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.69/Tone.js'></script>  <!-- bring in the Tone.js library - google search for tone.js cdn-->
-  <script src="p5.min.js"></script>
-
 </head>
 
 <body>
 
-  <div id="p5_loading" class="loadingclass">
-    <h1>loading...<br>loading...<br>loading...<br>loading...<br>loading...<br>loading...<br>loading...<br>loading...<br>loading...<br>loading...<br>loading...<br>loading...<br>loading...</h1>
+  <div id="loadscreen">
+      <h1>loading...<br>loading...<br>loading...<br>loading...<br>loading...<br>loading...<br>loading...<br>loading...<br>loading...<br>loading...<br>loading...<br>loading...<br>loading...</h1>
+  </div>
+  <div id="welcomescreen">
+    <br>
+    <br>
+    <br>
+    <br>
+    <p id="welcometext">Raw Elements<br><br>By Gawain Hewitt and Raw Material<br></p>
+    <p>Touch or click an image to enter each element <br> move mouse or finger to change sound balance</p>
+    <p>on iPhone you will need to <br>
+      switch silent mode off on the <br>
+      side of your phone</p>
+    <p id="clicktostart"> Touch or click <br>screen to start</p>
   </div>
 
-  <div id="container" class="containerclass">
+  <div id="container">
 
-    <div id="p5parent"></div>
-
+    <div id="image0">
+      <a href="air.html"><img src="images/menu_air.jpg" alt="Wind" width="600" height="600" id="i0"></a>
+    </div>
+    <div id="image1">
+      <a href="water.html"><img src="images/menu_water.jpg" alt="Water" width="600" height="600" id="i1"></a>
+    </div>
+    <div id="image2">
+      <a href="fire.html"><img src="images/menu_fire.jpg" alt="Fire" width="600" height="600" id="i2"></a>
+    </div>
+    <div id="image3">
+      <a href="earth.html"><img src="images/menu_earth.jpg" alt="Earth" width="600" height="600" id="i3"></a>
+    </div>
+    <span class="clear"></span> <!-- this keeps the above elements within the parent div-->
   </div>
 
-  <script src="music.js"></script>
+  <script src="home.js"></script>
 
 </body>
 </html>

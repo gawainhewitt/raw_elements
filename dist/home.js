@@ -74,7 +74,7 @@ function handleMouseUp() {
 }
 
   function handleStart(evt) { // this function handles touchstart
-    evt.preventDefault(); // prevent default touch actions like scroll
+    //evt.preventDefault(); // prevent default touch actions like scroll
 
     if(info === true) { // is the info screen on?
       Tone.start(); // we need this to allow audio to start. probably best to put it on a different button soon though
@@ -180,13 +180,13 @@ sampler.set({
 });
 
 function playSynth(i) {
-  sampler.triggerAttack(notes[i], Tone.now());
-  document.getElementById(`i${i}`).style.backgroundColor="magenta";
+  // sampler.triggerAttack(notes[i], Tone.now());
+  // document.getElementById(`i${i}`).style.backgroundColor="magenta";
 }
 
 var col = ["rgb(255, 255, 0)", "rgb(200, 200, 0)", "rgb(255, 255, 0)", "rgb(200, 200, 0)", "rgb(255, 255, 0)", "rgb(200, 200, 0)", "rgb(255, 255, 0)", "rgb(200, 200, 0)", "rgb(255, 255, 0)"]; //colour of button
 
 function stopSynth(i) {
-  sampler.triggerRelease(notes[i], Tone.now());
-  document.getElementById(`i${i}`).style.backgroundColor=col[i];
+  // sampler.triggerRelease(notes[i], Tone.now());
+  // document.getElementById(`i${i}`).style.backgroundColor=col[i];
 }

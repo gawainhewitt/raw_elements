@@ -58,11 +58,11 @@ let one; // to store random file name in (without extension)
 let two; // to store random file name in (without extension)
 let three; // to store random file name in (without extension)
 let four; // to store random file name in (without extension)
-let five = "firebeat"; // beat for this element
+let five = "airbeat"; // beat for this element
 let fileArray = []; // array of the random generated files
 let buffers; // where we load the sounds
-let element = "f"; // which element is this one?
-let elementWord = "fire";
+let element = "a"; // which element is this one?
+let elementWord = "AIR";
 let image1;
 let image2;
 let image3;
