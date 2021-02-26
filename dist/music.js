@@ -7,11 +7,10 @@ let numberOfButtons = 1;// automatically generate circular synth based on this
 
 let endedTouches = []; // array to store ended touches in
 let buttonPositions = []; // position to draw the buttons
-let buttonState = []; //store state of the buttons
-let buttonColour  = []; // colour of the buttons at any given time
-let buttonOffColour = []; // default off colours
-let buttonOnColour = []; // default on colours
-let synthState = []; // we need to store whether a note is playing because the synth is polyphonic and it will keep accepting on messages with every touch or moved touch and we won't be able to switch them all off
+let buttonState = [0]; //store state of the buttons
+let buttonColour  = "rgba(255, 0, 0, 0.25)"; // colour of the buttons at any given time
+let buttonOffColour = "rgba(255, 0, 0, 0.25)"; // default off colours
+let buttonOnColour = "rgba(0, 255, 0, 0.25)"; // default on colours
 let radius; // radius of the buttons
 let offsetT; // to store the difference between x and y readings once menus are taken into account
 let r; // radius of the circle around which the buttons will be drawn
@@ -43,7 +42,60 @@ let mouseState = []; // variable to store mouse clicks and drags in
 let mouseClick = false;
 let welcome = true;
 let load = true;
+let words = "off";
+const crossFade1 = new Tone.CrossFade(); // top bottom left
+const crossFade2 = new Tone.CrossFade(); // top bottom right
+const crossFade3 = new Tone.CrossFade().toDestination(); // fade between the two
+crossFade1.connect(crossFade3.a); // connect one crossfade to another
+crossFade2.connect(crossFade3.b); // connect one crossfade to another
+const player1 = new Tone.Player();
+const player2 = new Tone.Player();
+const player3 = new Tone.Player();
+const player4 = new Tone.Player();
+const player5 = new Tone.Player().toDestination();
+let people = ['h', 'j', 'm']; // initial of participants
+let one; // to store random file name in (without extension)
+let two; // to store random file name in (without extension)
+let three; // to store random file name in (without extension)
+let four; // to store random file name in (without extension)
+let five = "firebeat"; // beat for this element
+let fileArray = []; // array of the random generated files
+let buffers; // where we load the sounds
+let element = "f"; // which element is this one?
+let elementWord = "fire";
+let image1;
+let image2;
+let image3;
+let image4;
 
+function preload() {
+  do { // keep generating random names until 4 different ones
+    assignNames();
+  } while(checkForDuplicates(fileArray));
+
+  console.log(`one = ${one}`);
+  console.log(`two = ${two}`);
+  console.log(`three = ${three}`);
+  console.log(`four = ${four}`);
+  console.log(`five = ${five}`);
+
+  image1 = loadImage(`/images/${one}.jpg`);
+  image2 = loadImage(`/images/${two}.jpg`);
+  image3 = loadImage(`/images/${three}.jpg`);
+  image4 = loadImage(`/images/${four}.jpg`);
+
+  buffers = new Tone.ToneAudioBuffers({
+    urls: {
+      A1: `${one}.mp3`,
+      A2: `${two}.mp3`,
+      A3: `${three}.mp3`,
+      A4: `${four}.mp3`,
+      A5: `${five}.mp3`,
+    },
+    //onload:  () => welcomeScreen(), // initial screen for project - also allows an elegant place to put in the Tone.start() command.,
+    baseUrl: "/sounds/"
+  });
+}
 
 function setup() {  // setup p5
   step = TWO_PI/numberOfButtons; // in radians the equivalent of 360/6 - this will be used to draw the circles position
@@ -59,7 +111,7 @@ function setup() {  // setup p5
   let masterRight = divPos.right; // distance from left of screen to the right edge of bounding box
   let cnvDimension = masterRight - masterLeft; // size of div -however in some cases this is wrong, so i am now using css !important to set the size and sca;ing - but have kept this to work out size of other elements if needed
 
-  console.log("canvas sixe = " + cnvDimension);
+  console.log("canvas size = " + cnvDimension);
 
   let cnv = createCanvas(cnvDimension, cnvDimension); // create canvas - because i'm now using css size and !important this sizing actually reduntant
   cnv.id('mycanvas'); // assign id to the canvas so i can style it - this is where the css dynamic sizing is applied
@@ -76,7 +128,7 @@ function setup() {  // setup p5
   el.addEventListener("mousemove", handleMouseMove);
   offsetT = el.getBoundingClientRect(); // get the size and position of the p5parent div so i can use offset top to work out where touch and mouse actually need to be
 
-  colorMode(HSB, 5); // specify HSB colormode and set the range to be between 0 and numberOfButtons
+  colorMode(RGB); // specify HSB colormode and set the range to be between 0 and numberOfButtons
   noStroke(); // no stroke on the drawings
 
   radius = width/8;
@@ -86,13 +138,47 @@ function setup() {  // setup p5
     mouseState.push(0);
   }
 
-  loadScreen();
-                    // if animating put an if statement in the draw() function otherwise it will instantly overide it
+  if (window.DeviceOrientationEvent) {      // if device orientation changes we recalculate the offsetT variable
+    window.addEventListener("deviceorientation", handleOrientationEvent);
+  }
+
+  // do { // keep generating random names until 4 different ones
+  //   assignNames();
+  // } while(checkForDuplicates(fileArray));
+
+  // console.log(`one = ${one}`);
+  // console.log(`two = ${two}`);
+  // console.log(`three = ${three}`);
+  // console.log(`four = ${four}`);
+  // console.log(`five = ${five}`);
+
+  //loadScreen();
+
+  welcomeScreen();
+
   createButtonPositions(); // generate the default array info depending on number of buttons
+
+  // buffers = new Tone.ToneAudioBuffers({
+  //   urls: {
+  //     A1: `${one}.mp3`,
+  //     A2: `${two}.mp3`,
+  //     A3: `${three}.mp3`,
+  //     A4: `${four}.mp3`,
+  //     A5: `${five}.mp3`,
+  //   },
+  //   onload:  () => welcomeScreen(), // initial screen for project - also allows an elegant place to put in the Tone.start() command.,
+  //   baseUrl: "/sounds/"
+  // });
+
+}
+
+function handleOrientationEvent() {
+  let el = document.getElementById("p5parent");
+  offsetT = el.getBoundingClientRect(); // get the size and position of the p5parent div so i can use offset top to work out where touch and mouse actually need to be
 }
 
 function loadScreen() {
-  background(1, 0, 4); // background is grey (remember 5 is maximum because of the setup of colorMode)
+  background(200); // background is grey (remember 5 is maximum because of the setup of colorMode)
   textSize(32);
   textAlign(CENTER, CENTER);
   text("loading", width/10, height/10, (width/10) * 8, (height/10) * 8);
@@ -100,10 +186,10 @@ function loadScreen() {
 
 function welcomeScreen() {
   load = false;
-  background(1, 0, 4); // background is grey (remember 5 is maximum because of the setup of colorMode)
+  background(200); // background is grey (remember 5 is maximum because of the setup of colorMode)
   textSize(32);
   textAlign(CENTER, CENTER);
-  text("Raw Elements. Click button to play", width/10, height/10, (width/10) * 8, (height/10) * 8);
+  text(`Raw Elements ${elementWord}. Click to enter. Move to explore the soundworld`, width/10, height/10, (width/10) * 8, (height/10) * 8);
 }
 
 function createButtonPositions() {
@@ -121,10 +207,6 @@ function createButtonPositions() {
     });
 
     buttonState.push(0); //create default state of the buttons array
-    buttonColour.push(0); // set default colour of the buttons
-    buttonOffColour.push(0); // create default off colours
-    buttonOnColour.push(numberOfButtons); // create default on colours
-    synthState.push(0); //create default state of the synth array
     notes.push(allTheNotes[theNote]); //create the scale that we are using
 
     //increase angle by step size
@@ -139,39 +221,62 @@ function createButtonPositions() {
 function draw() {  // p5 draw function - the traditional way to do this in p5 - this is called 60 times a second so needed if want to animate
     if(!welcome){
 
-    background(1, 0, 4); // background is grey (remember 5 is maximum)
+    background(90); // background is grey
+
+    image(image1, 0, 0, width/2, height/2);
+    image(image2, 0, height/2, width/2, height/2);
+    image(image3, width/2, 0, width/2, height/2);
+    image(image4, width/2, height/2, width/2, height/2);
 
     for (let i = 0; i < buttonPositions.length; i++) {
-      fill(buttonColour[i], 4, 4);
+      fill(buttonColour);
       ellipse(buttonPositions[i].x, buttonPositions[i].y, radius * 2);
-      fill(0, 0, 0);
-      // text(`x = ${mouseX}`, buttonPositions[i].x, buttonPositions[i].y);
-      // text(`y = ${mouseY}`, buttonPositions[i].x, buttonPositions[i].y +30);
+      fill(255);
+      text(words, buttonPositions[i].x, buttonPositions[i].y);
     }
 
-    fill(4, 4, 4); // each touch point's colour relates to touch id. however remember that on iOs the id numbers are huge so this doesn't work so well
+    fill(120, 0, 120, 100); //
     ellipse(mouseX, mouseY, 100); //make a circle at the position of the touch
+
+    }
+
+    let xCrossFade = mouseX/width;
+    if(xCrossFade > 0 && xCrossFade < 1) {
+      crossFade3.fade.value = xCrossFade;
+    }
+
+    let yCrossFade = mouseY/height;
+    if(yCrossFade > 0 && yCrossFade < 1) {
+      crossFade1.fade.value = yCrossFade;
+      crossFade2.fade.value = yCrossFade;
     }
 
 }
 
-let player1;
-let player2;
+function assignNames(){
+  one = people[rand()]+element+(rand() +1);
+  two = people[rand()]+element+(rand() +1);
+  three = people[rand()]+element+(rand() +1);
+  four = people[rand()]+element+(rand() +1);
+  fileArray = [one, two, three, four];
+  console.log(checkForDuplicates(fileArray));
+}
 
-const buffers = new Tone.ToneAudioBuffers({
-  urls: {
-    A1: "firebeat.mp3",
-    A2: "ha1.mp3",
-  },
-  onload:  () => welcomeScreen(), // initial screen for project - also allows an elegant place to put in the Tone.start() command.,
-  baseUrl: "/sounds/"
-});
+function checkForDuplicates(array) { // returns true if there is a duplicate and false if not
+  return new Set(array).size !== array.length
+}
+
+
+function rand(maxLimit = 3) { // generates random number between 0 to maxLimit-1
+  let rand = Math.random() * maxLimit;
+  return Math.floor(rand);
+}
 
 function startAudio() {
     Tone.start(); // we need this to allow audio to start.
     welcome = false;
     soundOn = true;
-    player1 = new Tone.Player().toDestination();
+    player1.connect(crossFade1.a);
     player1.buffer = buffers.get("A1");
     player1.set(
       {
@@ -187,7 +292,7 @@ function startAudio() {
         "reverse": false
       }
     );
-    player2 = new Tone.Player().toDestination();
+    player2.connect(crossFade1.b);
     player2.buffer = buffers.get("A2");
     player2.set(
       {
@@ -203,32 +308,62 @@ function startAudio() {
         "reverse": false
       }
     );
-    synth = new Tone.PolySynth({
-      "oscillator": {
-        type: 'sawtooth6'
+    player3.connect(crossFade2.a);
+    player3.buffer = buffers.get("A3");
+    player3.set(
+      {
+        "mute": false,
+        "volume": 0,
+        "autostart": false,
+        "fadeIn": 11,
+        "fadeOut": 2,
+        "loop": true,
+        "loopEnd": 6.842,
+        "loopStart": 0,
+        "playbackRate": 1,
+        "reverse": false
       }
-    }).toDestination(); // create a polysynth
-    synth.set(  // setup the synth - this is audio stuff really
-        {
-          "volume": 0, //remember to allow for the cumalative effects of polyphony
-          "detune": 0,
-          "portamento": 0,
-          "envelope": {
-            "attack": 25,
-            "attackCurve": "linear",
-            "decay": 0,
-            "decayCurve": "exponential",
-            "sustain": 0.3,
-            "release": 5,
-            "releaseCurve": "exponential"
-          },
-        }
-      );
+    );
+    player4.connect(crossFade2.b);
+    player4.buffer = buffers.get("A4");
+    player4.set(
+      {
+        "mute": false,
+        "volume": 0,
+        "autostart": false,
+        "fadeIn": 11,
+        "fadeOut": 2,
+        "loop": true,
+        "loopEnd": 6.842,
+        "loopStart": 0,
+        "playbackRate": 1,
+        "reverse": false
+      }
+    );
+    player5.buffer = buffers.get("A5");
+    player5.set(
+      {
+        "mute": false,
+        "volume": -10,
+        "autostart": false,
+        "fadeIn": 11,
+        "fadeOut": 2,
+        "loop": true,
+        "loopEnd": 6.842,
+        "loopStart": 0,
+        "playbackRate": 1,
+        "reverse": false
+      }
+    );
+    crossFade1.fade.value = 0.5;
+    crossFade2.fade.value = 0.5;
+    crossFade3.fade.value = 0.5;
 }
 
 function handleMouseDown(e) {
   mouseClick = true;
   if(soundOn) {
+
     for (let i = 0; i < numberOfButtons; i++) { // for each button
       let d = dist(e.offsetX, e.offsetY, buttonPositions[i].x, buttonPositions[i].y); // compare the mouse to the button position -
       if (d < radius) { // is the mouse where a button is?
@@ -280,7 +415,7 @@ function handleStart(e) {
   if(soundOn){
     let _touches = e.changedTouches; //assign the changedTouches to an array called touches
     ongoingTouches.push(copyTouch(_touches[0])); //copy the new touch into the ongoingTouches array
-    //console.log(ongoingTouches); // debugging
+    console.log(`touchstart ${ongoingTouches}`); // debugging
     touchButton(e);
   }else{
     startAudio();
@@ -304,7 +439,7 @@ function handleMove(e) {
       console.log("can't figure out which touch to continue");
     }
   }
-  touchButton(e);
+  //touchButton(e);
 }
 
 function handleEnd(e) {
@@ -322,7 +457,7 @@ function handleEnd(e) {
       console.log("can't figure out which touch to end");
     }
   }
-  touchButton(e);
+  //touchButton(e);
     for (let t of e.changedTouches) { // cycle through the changedTouches array
       // console.log("touch id " + t.identifier + // debugging
       //   " released at x: " + t.clientX +
@@ -445,145 +580,30 @@ function handleKeyUp(e) {
 
 }
 
+let playerState = false;
+
 function playSynth(i) {
-  if(synthState[i] === 0) { // if the synth is not playing that note at the moment
+  if(!playerState) { // if the synth is not playing that note at the moment
     player1.start(); // play the note
     player2.start();
-    synthState[i] = 1; // change the array to reflect that the note is playing
-    buttonColour[i] = buttonOnColour[i]; //change the colour of the button to on colour
+    player3.start(); // play the note
+    player4.start();
+    player5.start();
+    playerState = true; // change the array to reflect that the note is playing
+    buttonColour = buttonOnColour; //change the colour of the button to on colour
+    words = "on";
   }else{
     player1.stop();
     player2.stop();
-    synthState[i] = 0; // change the array to reflect that the note is playing
-    buttonColour[i] = buttonOffColour[i]; //change the colour of the button to off colour
+    player3.stop();
+    player4.stop();
+    player5.stop();
+    playerState = false; // change the array to reflect that the note is playing
+    buttonColour = buttonOffColour; //change the colour of the button to off colour
+    words = "off";
   }
 }
 
 function stopSynth(i) {
-  // if(synthState[i] === 1) { // if the synth is playing that note at the moment
-  //   player1.stop();
-  //   player2.stop();
-  //   synthState[i] = 0; // change the array to reflect that the note is playing
-  //   buttonColour[i] = buttonOffColour[i]; //change the colour of the button to off colour
-  // }
+
 }
-
- // the following is to do with the select boxes and making them look pretty
-
-
- selectBoxes("keymenu"); //make a pretty keymenu
- selectBoxes("scalemenu"); //make a pretty scalemenu
- selectBoxes("octavemenu"); //make a pretty octavemenu
-
- function selectBoxes(name) {
-
- var x, i, j, l, ll, selElmnt, a, b, c;
- /* Look for any elements with the class "custom-select": */
- x = document.getElementsByClassName(name);
- l = x.length;
- for (i = 0; i < l; i++) {
-   selElmnt = x[i].getElementsByTagName("select")[0];
-   ll = selElmnt.length;
-   /* For each element, create a new DIV that will act as the selected item: */
-   a = document.createElement("DIV");
-   a.setAttribute("class", "select-selected");
-   a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
-   x[i].appendChild(a);
-   /* For each element, create a new DIV that will contain the option list: */
-   b = document.createElement("DIV");
-   b.setAttribute("class", "select-items select-hide");
-   for (j = 1; j < ll; j++) {
-     /* For each option in the original select element,
-     create a new DIV that will act as an option item: */
-     c = document.createElement("DIV");
-     c.innerHTML = selElmnt.options[j].innerHTML;
-     c.addEventListener("click", function(e) {
-         /* When an item is clicked, update the original select box,
-         and the selected item: */
-         var y, i, k, s, h, sl, yl;
-         s = this.parentNode.parentNode.getElementsByTagName("select")[0];
-         sl = s.length;
-         h = this.parentNode.previousSibling;
-         for (i = 0; i < sl; i++) {
-           if (s.options[i].innerHTML == this.innerHTML) {
-             s.selectedIndex = i;
-             console.log(name + (" ") + s.selectedIndex); //debugging
-             handleMenu(name, s.selectedIndex);   // send the menu name and the index of the selection to the handlemenu function
-             h.innerHTML = this.innerHTML;
-             y = this.parentNode.getElementsByClassName("same-as-selected");
-             yl = y.length;
-             for (k = 0; k < yl; k++) {
-               y[k].removeAttribute("class");
-             }
-             this.setAttribute("class", "same-as-selected");
-             break;
-           }
-         }
-         h.click();
-     });
-     b.appendChild(c);
-   }
-   x[i].appendChild(b);
-   a.addEventListener("click", function(e) {
-     /* When the select box is clicked, close any other select boxes,
-     and open/close the current select box: */
-     e.stopPropagation();
-     closeAllSelect(this);
-     this.nextSibling.classList.toggle("select-hide");
-     this.classList.toggle("select-arrow-active");
-     //console.log(a.innerHTML);
-   });
- }
- }
-
- function closeAllSelect(elmnt) {
-   /* A function that will close all select boxes in the document,
-   except the current select box: */
-   var x, y, i, xl, yl, arrNo = [];
-   x = document.getElementsByClassName("select-items");
-   y = document.getElementsByClassName("select-selected");
-   xl = x.length;
-   yl = y.length;
-   for (i = 0; i < yl; i++) {
-     if (elmnt == y[i]) {
-       arrNo.push(i)
-     } else {
-       y[i].classList.remove("select-arrow-active");
-     }
-   }
-   for (i = 0; i < xl; i++) {
-     if (arrNo.indexOf(i)) {
-       x[i].classList.add("select-hide");
-     }
-   }
- }
-
- /* If the user clicks anywhere outside the select box,
- then close all select boxes: */
- document.addEventListener("click", closeAllSelect);
-
- function handleMenu(menu, index) { // function to handle the menu selections and change scales and keys
-   if(menu === "keymenu"){
-     theKey = index -1; // set the variable to the correct scale - the minus 1 is to offset it to allow for the default menu setting
-     console.log("the key is "+theKey); //debugging
-     for(var i = 0; i < 9; i++) {
-       var theNote = scale[i] + octave + theKey; // the note plus the octave plus the offset from the key menu
-       notes[i] = allTheNotes[theNote]; // pick the notes from the all the notes array
-     }
-   }else if(menu === "scalemenu"){
-     console.log("the scale is "+index);
-     scale = scales[index];
-     console.log(scale);
-     for(var i = 0; i < 9; i++) {
-       var theNote = scale[i] + octave + theKey; // the note plus the octave plus the offset from the key menu
-       notes[i] = allTheNotes[theNote]; // pick the notes from the all the notes array
-     }
-   } else {
-     console.log("the octave is "+index);
-     octave = index * 12;                      //octave switching here WORKING HERE
-     for(var i = 0; i < 9; i++) {
-       var theNote = scale[i] + octave + theKey; // the note plus the octave plus the offset from the key menu
-       notes[i] = allTheNotes[theNote]; // pick the notes from the all the notes array
-     }
-   }
- }
