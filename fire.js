@@ -53,7 +53,7 @@ const player2 = new Tone.Player();
 const player3 = new Tone.Player();
 const player4 = new Tone.Player();
 const player5 = new Tone.Player().toDestination();
-let people = ['h', 'j', 'm']; // initial of participants
+let people = ['h', 'j', 'm', 'r']; // initial of participants
 let one; // to store random file name in (without extension)
 let two; // to store random file name in (without extension)
 let three; // to store random file name in (without extension)
@@ -142,33 +142,9 @@ function setup() {  // setup p5
     window.addEventListener("deviceorientation", handleOrientationEvent);
   }
 
-  // do { // keep generating random names until 4 different ones
-  //   assignNames();
-  // } while(checkForDuplicates(fileArray));
-
-  // console.log(`one = ${one}`);
-  // console.log(`two = ${two}`);
-  // console.log(`three = ${three}`);
-  // console.log(`four = ${four}`);
-  // console.log(`five = ${five}`);
-
-  //loadScreen();
-
   welcomeScreen();
 
   createButtonPositions(); // generate the default array info depending on number of buttons
-
-  // buffers = new Tone.ToneAudioBuffers({
-  //   urls: {
-  //     A1: `${one}.mp3`,
-  //     A2: `${two}.mp3`,
-  //     A3: `${three}.mp3`,
-  //     A4: `${four}.mp3`,
-  //     A5: `${five}.mp3`,
-  //   },
-  //   onload:  () => welcomeScreen(), // initial screen for project - also allows an elegant place to put in the Tone.start() command.,
-  //   baseUrl: "/sounds/"
-  // });
 
 }
 
@@ -254,20 +230,20 @@ function draw() {  // p5 draw function - the traditional way to do this in p5 - 
 }
 
 function assignNames(){
-  one = people[rand()]+element+(rand() +1);
-  two = people[rand()]+element+(rand() +1);
-  three = people[rand()]+element+(rand() +1);
-  four = people[rand()]+element+(rand() +1);
+  one = people[rand(4)]+element+(rand(3) +1);
+  two = people[rand(4)]+element+(rand(3) +1);
+  three = people[rand(4)]+element+(rand(3) +1);
+  four = people[rand(4)]+element+(rand(3) +1);
   fileArray = [one, two, three, four];
   console.log(checkForDuplicates(fileArray));
 }
 
 function checkForDuplicates(array) { // returns true if there is a duplicate and false if not
-  return new Set(array).size !== array.length
+  return new Set(array).size !== array.length // because a set can't have a duplicate, so if there is a duplicate it won't be the same size as the array
 }
 
 
-function rand(maxLimit = 3) { // generates random number between 0 to maxLimit-1
+function rand(maxLimit) { // generates random number between 0 to maxLimit-1
   let rand = Math.random() * maxLimit;
   return Math.floor(rand);
 }
