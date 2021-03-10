@@ -163,9 +163,11 @@ function loadScreen() {
 function welcomeScreen() {
   load = false;
   background(200); // background is grey (remember 5 is maximum because of the setup of colorMode)
-  textSize(32);
+  textSize(100);
   textAlign(CENTER, CENTER);
-  text(`Raw Elements ${elementWord}. Click to enter. Move to explore the soundworld`, width/10, height/10, (width/10) * 8, (height/10) * 8);
+  text(`${elementWord}`, width/2, height/5);
+  textSize(32);
+  text(`Click to enter. Centre button starts sound. Move to explore the soundworld`, width/10, height/10, (width/10) * 8, (height/10) * 8);
 }
 
 function createButtonPositions() {
