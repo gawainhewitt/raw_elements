@@ -167,7 +167,7 @@ function welcomeScreen() {
   textAlign(CENTER, CENTER);
   text(`${elementWord}`, width/2, height/5);
   textSize(width/16);
-  text(`Click to enter. Centre button starts sound. Move to explore the soundworld. Press back button on browser to start again.`, width/10, height/8, (width/10) * 8, (height/10) * 8);
+  text(`Click to enter. Centre button starts sound. Move to explore the soundworld. Click back on your browser to explore the other elements.`, width/10, height/8, (width/10) * 8, (height/10) * 8);
   // text('Press the back button on your browser to start again', width/10, height/4, (width/10) * 8, (height/10) * 8)
 }
 
