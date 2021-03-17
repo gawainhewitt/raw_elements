@@ -162,7 +162,7 @@ function loadScreen() {
 
 function welcomeScreen() {
   load = false;
-  background(200); // background is grey (remember 5 is maximum because of the setup of colorMode)
+  background rgb(170, 174, 182); // background is grey (remember 5 is maximum because of the setup of colorMode)
   textSize(100);
   textAlign(CENTER, CENTER);
   text(`${elementWord}`, width/2, height/5);
