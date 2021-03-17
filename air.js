@@ -167,8 +167,8 @@ function welcomeScreen() {
   textAlign(CENTER, CENTER);
   text(`${elementWord}`, width/2, height/5);
   textSize(32);
-  text(`Click to enter. Centre button starts sound. Move to explore the soundworld`, width/10, height/10, (width/10) * 8, (height/10) * 8);
-  text('Press the back button on your browser to start again', width/10, height/4, (width/10) * 8, (height/10) * 8)
+  text(`Click to enter. Centre button starts sound. Move to explore the soundworld. Press the back button on your browser to start again`, width/10, height/10, (width/10) * 8, (height/10) * 8);
+  // text('Press the back button on your browser to start again', width/10, height/4, (width/10) * 8, (height/10) * 8)
 }
 
 function createButtonPositions() {
