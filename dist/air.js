@@ -163,11 +163,11 @@ function loadScreen() {
 function welcomeScreen() {
   load = false;
   background (170, 174, 182); // background is grey (remember 5 is maximum because of the setup of colorMode)
-  textSize(100);
+  textSize(width/6);
   textAlign(CENTER, CENTER);
   text(`${elementWord}`, width/2, height/5);
-  textSize(32);
-  text(`Click to enter. Centre button starts sound. Move to explore the soundworld. Press back button to start again`, width/10, height/10, (width/10) * 8, (height/10) * 8);
+  textSize(width/16);
+  text(`Click to enter. Centre button starts sound. Move to explore the soundworld. Press back button on browser to start again.`, width/10, height/8, (width/10) * 8, (height/10) * 8);
   // text('Press the back button on your browser to start again', width/10, height/4, (width/10) * 8, (height/10) * 8)
 }
 
